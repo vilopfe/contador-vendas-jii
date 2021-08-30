@@ -19,9 +19,9 @@ public class Application {
         salesReader.totalSalesBySeller("Adriana Gomes");
         salesReader.countSalesByManager("Elenice Mendes");
         salesReader.totalSalesByMonth(Month.JULY, Month.SEPTEMBER);
-        //salesReader.rankingByDepartment();
+        salesReader.rankingByDepartment();
         //salesReader.rankingByPaymentMethod();
-        salesReader.bestSellers();
+        //salesReader.bestSellers();
     }
 
     public static void main(String[] args) {

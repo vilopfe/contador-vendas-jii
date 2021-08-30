@@ -9,6 +9,7 @@ import java.text.NumberFormat;
 import java.time.LocalDate;
 import java.time.Month;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static java.util.Comparator.comparing;
 
@@ -104,7 +105,32 @@ public class SalesReader {
 
     public void rankingByDepartment() {
         // TODO faca um ranking contando o total (quantidade) de vendas por departamento
+        Map<String,String> rankingByDepartment = sales.stream()
+                .collect(Collectors.toMap(Sale::getNumber,Sale::getDepartment));
+        rankingByDepartment
+                .entrySet()
+                .stream()
+                .sorted(Map.Entry.<String,String>comparingByValue().reversed())
+                .collect(Collectors.groupingBy(sales -> sales.getValue(), Collectors.counting()))
+                .forEach((totalDepto, count) -> {
+                      System.out.println("**totaldepto : " + totalDepto + " " + count);
+                  }
+                  );
+        rankingByDepartment
+                .entrySet()
+                .stream()
+                .sorted(Map.Entry.<String,String>comparingByValue().reversed())
+                .collect(Collectors.toMap(
+                        Map.Entry::getKey,
+                        Map.Entry::getValue,
+                        (v1,v2) -> v1,
+                        LinkedHashMap::new))
+                .forEach((totalDepto, count) -> {
+                            System.out.println("**totaldepto2 : " + totalDepto + " " + count);
+                        }
+                );
     }
+
 
     public void rankingByPaymentMethod() {
         // TODO faca um ranking contando o total (quantidade) de vendas por meio de pagamento
