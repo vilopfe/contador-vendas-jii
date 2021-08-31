@@ -113,6 +113,8 @@ public class Sale {
 
     public BigDecimal getValue() { return value; }
 
+    public Double getValueDouble() { return Double.valueOf(String.valueOf(value)); }
+
     public void setValue(BigDecimal value) {
         this.value = value;
     }
@@ -124,4 +126,5 @@ public class Sale {
     public void setStatus(String status) {
         this.status = status;
     }
+
 }

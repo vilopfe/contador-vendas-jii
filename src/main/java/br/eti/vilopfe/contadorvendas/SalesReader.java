@@ -9,6 +9,7 @@ import java.text.NumberFormat;
 import java.time.LocalDate;
 import java.time.Month;
 import java.util.*;
+import java.util.function.ToLongFunction;
 import java.util.stream.Collectors;
 
 import static java.util.Comparator.comparing;
@@ -105,39 +106,61 @@ public class SalesReader {
 
     public void rankingByDepartment() {
         // TODO faca um ranking contando o total (quantidade) de vendas por departamento
-        Map<String,String> rankingByDepartment = sales.stream()
-                .collect(Collectors.toMap(Sale::getNumber,Sale::getDepartment));
-        rankingByDepartment
+        // Mapeando: <Departamento, Count>
+        Map<String,Long> rankingByDepartment = sales.stream()
+                .collect(Collectors.groupingBy(Sale::getDepartment,Collectors.counting()));
+        final var rankingByDepartmentSort = rankingByDepartment
                 .entrySet()
                 .stream()
-                .sorted(Map.Entry.<String,String>comparingByValue().reversed())
-                .collect(Collectors.groupingBy(sales -> sales.getValue(), Collectors.counting()))
-                .forEach((totalDepto, count) -> {
-                      System.out.println("**totaldepto : " + totalDepto + " " + count);
-                  }
-                  );
-        rankingByDepartment
-                .entrySet()
-                .stream()
-                .sorted(Map.Entry.<String,String>comparingByValue().reversed())
-                .collect(Collectors.toMap(
+                //Classificação descendente
+                .sorted(Map.Entry.<String,Long>comparingByValue().reversed())
+                    //Mapeando por Departamento
+                    .collect(Collectors.toMap(
                         Map.Entry::getKey,
                         Map.Entry::getValue,
-                        (v1,v2) -> v1,
-                        LinkedHashMap::new))
-                .forEach((totalDepto, count) -> {
-                            System.out.println("**totaldepto2 : " + totalDepto + " " + count);
-                        }
-                );
+                        (c1, c2) -> c1,
+                        LinkedHashMap::new));
+        System.out.println("Ranking total de vendas por detpartamento : " + rankingByDepartmentSort);
     }
-
 
     public void rankingByPaymentMethod() {
         // TODO faca um ranking contando o total (quantidade) de vendas por meio de pagamento
+        // Mapeando: <Departamento, Count>
+        Map<String,Long> rankingByPaymentMethod = sales.stream()
+                .collect(Collectors.groupingBy(Sale::getPaymentMethod,Collectors.counting()));
+        final var rankingByPaymentMethodSort = rankingByPaymentMethod
+                .entrySet()
+                .stream()
+                //Classificação descendente
+                .sorted(Map.Entry.<String,Long>comparingByValue().reversed())
+                //Mapeando por Departamento
+                .collect(Collectors.toMap(
+                        Map.Entry::getKey,
+                        Map.Entry::getValue,
+                        (c1, c2) -> c1,
+                        LinkedHashMap::new));
+        System.out.println("Ranking total de vendas por tipo de pagamento : " + rankingByPaymentMethodSort);
     }
 
     public void bestSellers() {
         // TODO faca um top 3 dos vendedores que mais venderam (ranking por valor em vendas)
+        // Mapeando: <Departamento, Count>
+
+        Map<String,Double> rankingBySeller = sales.stream()
+                .collect(Collectors.groupingBy(Sale::getSeller, Collectors.summingDouble((Sale::getValueDouble))));
+        final var rankingBySellerSort = rankingBySeller
+                .entrySet()
+                .stream()
+                //Classificação descendente
+                .sorted(Map.Entry.<String,Double>comparingByValue().reversed())
+                .limit(3)
+                //Mapeando por Departamento
+                .collect(Collectors.toMap(
+                        Map.Entry::getKey,
+                        Map.Entry::getValue,
+                        (c1, c2) -> c1,
+                        LinkedHashMap::new));
+        System.out.println("Ranking total de vendas por vendedor : " + rankingBySellerSort);
     }
 
     /*
